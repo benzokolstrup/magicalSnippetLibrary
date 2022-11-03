@@ -1,0 +1,27 @@
+{
+    "manifest_version": 3,
+    "name": "Magical Snippet Library",
+    "version": "0.2.1",
+    "description": "Tools and snippets to make everyones life easier",
+    "author": "Benjamin Kolstrup",
+    "icons": {
+        "16": "icons/icon16.jpg",
+        "32": "icons/icon32.jpg",
+        "48": "icons/icon48.jpg",
+        "128": "icons/icon128.jpg"
+    },
+    "action": {
+        "default_title": "Magical Snippet Library",
+        "default_popup": "index.html"
+    },
+    "content_scripts": [
+        {
+        "matches": ["https://phone-dashboard.addwish.com/trello_tech_support_control_tower/"],
+        "js": ["control_tower/script.js"]
+        },
+        {
+        "matches": ["https://phone-dashboard.addwish.com/trello_tech_support_control_tower/"],
+        "css": ["control_tower/style.css"]
+        }
+    ]
+} 
