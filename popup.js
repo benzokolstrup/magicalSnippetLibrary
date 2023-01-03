@@ -51,12 +51,13 @@ fetch(url)
                 return label.match(labelRegex) ? label : null;
             });
         });
+        console.log(cheats)
         // Rendering all results
         initialLoad();
     });
 // Called when initially loaded extension and when there is nothing in the search input. Will get all results and set focus on the input when ready
 function initialLoad(){
-    sortResultsAlphabetically(cheats).forEach((cheat) => {
+    cheats.forEach((cheat) => {
         createItem(cheat);
     });
     searchInput.focus();
@@ -75,21 +76,6 @@ function clearResults(){
     });
     results = [];
 }
-// Sorting results alphabetically. Happens everytime results are being loaded
-function sortResultsAlphabetically(sortedResults){
-    sortedResults.sort((a, b) => {
-        var fa = a.title.toLowerCase(),
-            fb = b.title.toLowerCase();
-        if (fa < fb) {
-            return -1;
-        }
-        if (fa > fb) {
-            return 1;
-        }
-        return 0;
-    });
-    return sortedResults;
-}
 // This function will be called on 'input', so everytime someone is typing in the input
 function searching(){
     clearResults();
@@ -101,14 +87,17 @@ function searching(){
     }
     cheats.forEach((cheat) => {
         searchWordArr.forEach((searchWord) => {
-            if(cheat.title.toLowerCase().match(searchWord) || cheat.keywords.toLowerCase().match(searchWord) || cheat.creator.toLowerCase().match(searchWord)){
+            if(cheat.title.toLowerCase().match(searchWord) || cheat.keywords.toLowerCase().match(searchWord) || cheat.labels.join(' ').toLowerCase().match(searchWord)){
                 if (!filteredCheats.includes(cheat)){
                     filteredCheats.push(cheat);
                 }
             }
         });
     });
-    searchLoad(sortResultsAlphabetically(filteredCheats));
+    searchLoad(filteredCheats);
+}
+function sortByRelevance(){
+
 }
 // This function will create a result with the data in the object. Then appending it to the results
 function createItem(cheat){
