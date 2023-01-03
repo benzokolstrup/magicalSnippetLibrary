@@ -10,18 +10,29 @@
         "48": "icons/icon48.jpg",
         "128": "icons/icon128.jpg"
     },
+    "permissions": [
+        "tabs"
+    ],
     "action": {
         "default_title": "Magical Snippet Library",
         "default_popup": "index.html"
     },
     "content_scripts": [
         {
-        "matches": ["https://phone-dashboard.addwish.com/trello_tech_support_control_tower/"],
-        "js": ["control_tower/script.js"]
+            "matches": [
+                "https://phone-dashboard.addwish.com/trello_tech_support_control_tower/"
+            ],
+            "js": [
+                "control_tower/script.js"
+            ]
         },
         {
-        "matches": ["https://phone-dashboard.addwish.com/trello_tech_support_control_tower/"],
-        "css": ["control_tower/style.css"]
+            "matches": [
+                "https://phone-dashboard.addwish.com/trello_tech_support_control_tower/"
+            ],
+            "css": [
+                "control_tower/style.css"
+            ]
         }
     ]
 } 

@@ -1,25 +1,30 @@
-const pasteInput = document.querySelector('[data-copy-area]'),
+const url = 'https://docs.google.com/spreadsheets/d/16ghwGjgxzzZsBYPm2bn_Y6jB31ECMYckB36exce7TEI/export?format=csv',
+    pasteInput = document.querySelector('[data-copy-area]'),
     contentWrapper = document.querySelector('[data-cheatsheet-wrapper]'),
     searchInput = document.querySelector('.search'),
-    contentHeader = document.querySelector('.content-header');
+    contentHeader = document.querySelector('.content-header'),
+    googleSheetLink = document.querySelector('[data-sheet-link]'),
+    searchInputPlaceholderArr = ['All the wonders of the world awaits you...', 'Need cheats? I got cheats...'],
+    // Regex variables
+    labelRegex = /liquid|feed|selector|template|crawl|javascript/i,
+    // Matches a line break if it is not surrounded by quotes
+    splitLineBreak = /\n(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/,
+    // Matches a comma if it is not surrounded by quotes
+    splitComma = /,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
 
-const searchInputPlaceholderArr = ['All the wonders of the world awaits you...', 'Need cheats? I got cheats...'];
+var cheats = [],
+    results = [],
+    filteredCheats = [];
+
+// Adding random placeholder to the input
 searchInput.placeholder = searchInputPlaceholderArr[Math.floor(Math.random() * 2)];
 
-var cheats = [];
-var results = [];
-var filteredCheats = [];
-
-const url = 'https://docs.google.com/spreadsheets/d/16ghwGjgxzzZsBYPm2bn_Y6jB31ECMYckB36exce7TEI/export?format=csv';
-
-// Regex variables
-const labelRegex = /liquid|feed|selector|template|crawl|javascript/i;
-
-// Matches a line break if it is not surrounded by quotes
-const splitLineBreak = /\n(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
-
-// Matches a comma if it is not surrounded by quotes
-const splitComma = /,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/;
+// linking to the Google Sheet using the link href
+googleSheetLink.addEventListener('click', (e) => {
+    if(e.target.href != undefined){
+        chrome.tabs.create({url:e.target.href})
+    }
+});
 
 // Grabbing data from the google spreadsheet as a string and converting it to JS objects
 fetch(url)
@@ -40,7 +45,7 @@ fetch(url)
         }
         // Refine object data
         cheats.forEach((cheat) => {
-            cheat.keywords = cheat.keywords.split(',');
+            cheat.snippet = cheat.snippet.replace(/([^"])""([^"])/g, '$1"$2').replace('""""', '""')
             cheat.labels = cheat.labels.split(/\.|,|\s/g);
             cheat.labels = cheat.labels.filter(function (label) {
                 return label.match(labelRegex) ? label : null;
@@ -96,7 +101,7 @@ function searching(){
     }
     cheats.forEach((cheat) => {
         searchWordArr.forEach((searchWord) => {
-            if(cheat.title.toLowerCase().match(searchWord) || cheat.keywords.join(" ").toLowerCase().match(searchWord) || cheat.creator.toLowerCase().match(searchWord)){
+            if(cheat.title.toLowerCase().match(searchWord) || cheat.keywords.toLowerCase().match(searchWord) || cheat.creator.toLowerCase().match(searchWord)){
                 if (!filteredCheats.includes(cheat)){
                     filteredCheats.push(cheat);
                 }
@@ -107,7 +112,6 @@ function searching(){
 }
 // This function will create a result with the data in the object. Then appending it to the results
 function createItem(cheat){
-    console.log(cheat);
     var cheatItem = document.createElement('div');
     cheatItem.classList.add('item');
     cheatItem.dataset.cheatItem = '';
